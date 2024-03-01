@@ -7,6 +7,7 @@
 
 #=====importing libraries===========
 import os
+import time
 from datetime import datetime, date
 from User_management.user import User
 from task import Task
@@ -14,93 +15,33 @@ from task import Task
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
 """"Create a list"""
+
+
+
+def clear_screen():
+    """Clearing screen funtion"""
+    os.system("cls")
+
+def display_selection_menu():
+    print()
+    _menu = input('''Select one of the following Options below:
+r - Registering a user
+a - Adding a task
+va - View all tasks
+vm - View my task
+ds - Display statistics
+e - Exit
+: ''').lower()
+    return _menu
+
+
+
+
+
 #USER_LIST : User = [] 
 TASK_LIST : Task = []
 
-
-""" def add_task():
-    '''Allow a user to add a new task to task.txt file
-        Prompt a user for the following: 
-            - A username of the person whom the task is assigned to,
-            - A title of a task,
-            - A description of the task and 
-            - the due date of the task.'''
-
-    task_username = input("Name of person assigned to task: ")
-    if task_username not in username_password.keys():
-        print("User does not exist. Please enter a valid username")
-        #continue
-    task_title = input("Title of Task: ")
-    task_description = input("Description of Task: ")
-    while True:
-        try:
-            task_due_date = input("Due date of task (YYYY-MM-DD): ")
-            due_date_time = datetime.strptime(task_due_date, DATETIME_STRING_FORMAT)
-            break
-
-        except ValueError:
-            print("Invalid datetime format. Please use the format specified")
-
-
-    # Then get the current date.
-    curr_date = date.today()
-
-    ''' Add the data to the file task.txt and
-        Include 'No' to indicate if the task is complete.'''
-    
-    new_task = {
-        "username": task_username,
-        "title": task_title,
-        "description": task_description,
-        "due_date": due_date_time,
-        "assigned_date": curr_date,
-        "completed": False
-    }
-
-    task_list.append(new_task)
-    with open("tasks.txt", "w") as task_file:
-        task_list_to_write = []
-        for t in task_list:
-            str_attrs = [
-                t['username'],
-                t['title'],
-                t['description'],
-                t['due_date'].strftime(DATETIME_STRING_FORMAT),
-                t['assigned_date'].strftime(DATETIME_STRING_FORMAT),
-                "Yes" if t['completed'] else "No"
-            ]
-            task_list_to_write.append(";".join(str_attrs))
-        task_file.write("\n".join(task_list_to_write))
-    print("Task successfully added.")
-
-
- """
-
-
-# # Create tasks.txt if it doesn't exist
-# if not os.path.exists("tasks.txt"):
-#     with open("tasks.txt", "w") as default_file:
-#         pass
-
-# with open("tasks.txt", 'r') as task_file:
-#     task_data = task_file.read().split("\n")
-#     task_data = [t for t in task_data if t != ""]
-
-
-# task_list = []
-# for t_str in task_data:
-#     curr_t = {}
-
-#     # Split by semicolon and manually add each component
-#     task_components = t_str.split(";")
-#     curr_t['username'] = task_components[0]
-#     curr_t['title'] = task_components[1]
-#     curr_t['description'] = task_components[2]
-#     curr_t['due_date'] = datetime.strptime(task_components[3], DATETIME_STRING_FORMAT)
-#     curr_t['assigned_date'] = datetime.strptime(task_components[4], DATETIME_STRING_FORMAT)
-#     curr_t['completed'] = True if task_components[5] == "Yes" else False
-
-#     task_list.append(curr_t)
+logged_user : str = ""
 
 
 
@@ -115,19 +56,19 @@ while not LOGGED_IN:
     LOGGED_IN = logged_user_instance.authenticate(curr_user, curr_pass)
 
 #USER_LIST.append(logged_user_instance)
+logged_user = logged_user_instance.username
+clear_screen()
+print("Logged in as " + logged_user)
+tasks_getter = Task()
+TASK_LIST = tasks_getter.get_tasks_from_file()
+print(TASK_LIST)
+time.sleep(1)
+del tasks_getter
 
 while True:
     # presenting the menu to the user and 
     # making sure that the user input is converted to lower case.
-    print()
-    menu = input('''Select one of the following Options below:
-r - Registering a user
-a - Adding a task
-va - View all tasks
-vm - View my task
-ds - Display statistics
-e - Exit
-: ''').lower()
+    menu = display_selection_menu()
 
     if menu == 'r':
         new_user_instance = User()
@@ -140,21 +81,22 @@ e - Exit
         if TASK_IS_CORRECT:
             TASK_LIST.append(task_instance)
 
-
     elif menu == 'va':
         '''Reads the task from task.txt file and prints to the console in the 
            format of Output 2 presented in the task pdf (i.e. includes spacing
            and labelling) 
         '''
+        task_instance = Task()
+        task_instance.get_tasks_from_file()
 
-        # for t in task_list:
-        #     disp_str = f"Task: \t\t {t['title']}\n"
+
+        for task in TASK_LIST:
+             disp_str = f"Task: \t\t {task.task_title}\n"
         #     disp_str += f"Assigned to: \t {t['username']}\n"
         #     disp_str += f"Date Assigned: \t {t['assigned_date'].strftime(DATETIME_STRING_FORMAT)}\n"
         #     disp_str += f"Due Date: \t {t['due_date'].strftime(DATETIME_STRING_FORMAT)}\n"
         #     disp_str += f"Task Description: \n {t['description']}\n"
-        #     print(disp_str)
-        pass
+             print(disp_str)
 
 
     elif menu == 'vm':
@@ -162,7 +104,7 @@ e - Exit
     #     '''Reads the task from task.txt file and prints to the console in the 
     #        format of Output 2 presented in the task pdf (i.e. includes spacing
     #        and labelling)
-    #     '''
+    #     '''a
     #     for t in task_list:
     #         if t['username'] == curr_user:
     #             disp_str = f"Task: \t\t {t['title']}\n"

@@ -1,5 +1,9 @@
-from User_management.user import User
+"""Task related class"""
+import os
+
+
 from datetime import datetime, date
+from User_management.user import User
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
@@ -8,14 +12,14 @@ DATETIME_STRING_FORMAT = "%Y-%m-%d"
 class Task:
     """Class that allow to create/list/eliminates tasks"""
 
-
-    def __init__(self) -> None:
-        self.task_username = ""
-        self.task_title = ""
-        self.task_description = ""
-        self.task_due_date = ""
-        self.assigned_date = ""
-        self.completed = False
+    def __init__(self, _username = "", _title = "", _description = "", \
+                 _due_date = "", _assigned_date = "", _completed = "") -> None:
+        self.task_username = _username
+        self.task_title = _title
+        self.task_description = _description
+        self.task_due_date = _due_date
+        self.assigned_date = _assigned_date
+        self.completed = _completed
 
 
 
@@ -48,7 +52,7 @@ class Task:
         self.completed = False
         self._register_task()
         return True
-    
+
 
     def _register_task(self):
         """Write the task in the tast.txt, storing it in the memory"""
@@ -66,12 +70,22 @@ class Task:
                ]
             task_list_to_write = []
             task_list_to_write.append(";".join(str_attrs))
-            task_file.write("\n".join(task_list_to_write))
+            task_file.write("\n" + task_list_to_write)
             print("Task successfully added.")
 
 
+    def get_tasks_from_file(self):
+        """Retrieving the tasks from the tasks.txt file, if missing it will be created"""
+        if not os.path.exists("tasks.txt"):
+            with open("tasks.txt", "w", encoding="utf-8") as default_file:
+                default_file.write("")
+
+        with open("tasks.txt", 'r', encoding="utf=8") as tasks_file:
+            task_data = tasks_file.read().split("\n")
+            for task in task_data:
+                if task:
+                    task_info = task.split(';')
+                    new_task = Task(*task_info)
+            return new_task
 
 
-
-    def view_all_task(self):
-        pass
