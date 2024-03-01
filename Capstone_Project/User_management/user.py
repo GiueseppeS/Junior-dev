@@ -63,3 +63,4 @@ class User:
             username, password = user.split(';')
             username_password[username] = password
         return username_password
+    

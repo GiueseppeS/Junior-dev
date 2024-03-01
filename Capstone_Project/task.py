@@ -8,13 +8,14 @@ DATETIME_STRING_FORMAT = "%Y-%m-%d"
 class Task:
     """Class that allow to create/list/eliminates tasks"""
 
+
     def __init__(self) -> None:
         self.task_username = ""
         self.task_title = ""
         self.task_description = ""
         self.task_due_date = ""
         self.assigned_date = ""
-        self.completed : bool = False
+        self.completed = False
 
 
 
@@ -44,4 +45,33 @@ class Task:
                 print("Invalid datetime format. Please use the format specified")
          # Then get the current date.
         self.assigned_date = date.today()
+        self.completed = False
+        self._register_task()
         return True
+    
+
+    def _register_task(self):
+        """Write the task in the tast.txt, storing it in the memory"""
+        curr_date = date.today()
+
+
+        with open("tasks.txt", "a", encoding="utf-8") as task_file:
+            str_attrs = [
+                self.task_username,
+                self.task_title,
+                self.task_description,
+                self.task_due_date.strftime(DATETIME_STRING_FORMAT),
+                curr_date.strftime(DATETIME_STRING_FORMAT),
+                "Yes" if self.completed else "No"
+               ]
+            task_list_to_write = []
+            task_list_to_write.append(";".join(str_attrs))
+            task_file.write("\n".join(task_list_to_write))
+            print("Task successfully added.")
+
+
+
+
+
+    def view_all_task(self):
+        pass
