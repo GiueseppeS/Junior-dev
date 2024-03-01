@@ -59,10 +59,13 @@ while not LOGGED_IN:
 logged_user = logged_user_instance.username
 clear_screen()
 print("Logged in as " + logged_user)
+
+#Creating an instance of the Task class in order to retrieve the tasks from the tasks.txt file
 tasks_getter = Task()
 TASK_LIST = tasks_getter.get_tasks_from_file()
-print(TASK_LIST)
+
 time.sleep(1)
+
 del tasks_getter
 
 while True:
@@ -82,21 +85,18 @@ while True:
             TASK_LIST.append(task_instance)
 
     elif menu == 'va':
-        '''Reads the task from task.txt file and prints to the console in the 
-           format of Output 2 presented in the task pdf (i.e. includes spacing
-           and labelling) 
-        '''
+        #Visualise all the tasks with the user assigned, the date, 
+        #the due date and the task description
+
         task_instance = Task()
-        task_instance.get_tasks_from_file()
+        TASK_LIST = task_instance.get_tasks_from_file()
 
-
-        for task in TASK_LIST:
-             disp_str = f"Task: \t\t {task.task_title}\n"
-        #     disp_str += f"Assigned to: \t {t['username']}\n"
-        #     disp_str += f"Date Assigned: \t {t['assigned_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-        #     disp_str += f"Due Date: \t {t['due_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-        #     disp_str += f"Task Description: \n {t['description']}\n"
-             print(disp_str)
+        clear_screen()
+        if len(TASK_LIST) > 0:
+            for task in TASK_LIST:
+                print(task)
+        else:
+            print("No tasks to show")
 
 
     elif menu == 'vm':

@@ -22,6 +22,13 @@ class Task:
         self.completed = _completed
 
 
+    def __str__(self) -> str:
+        return f"Task: \t\t {self.task_title}\n" \
+                f"Assigned to: \t {self.task_username}\n" \
+                f"Date assigned: \t {self.assigned_date}\n" \
+                f"Due Date: \t {self.task_due_date}\n" \
+                f"Task Description: \n {self.task_description}\n"
+
 
     def add_task(self) -> bool:
         '''Allow a user to add a new task to task.txt file
@@ -69,13 +76,14 @@ class Task:
                 "Yes" if self.completed else "No"
                ]
             task_list_to_write = []
-            task_list_to_write.append(";".join(str_attrs))
+            task_list_to_write = ";".join(str_attrs)
             task_file.write("\n" + task_list_to_write)
             print("Task successfully added.")
 
 
     def get_tasks_from_file(self):
         """Retrieving the tasks from the tasks.txt file, if missing it will be created"""
+        tasks = []
         if not os.path.exists("tasks.txt"):
             with open("tasks.txt", "w", encoding="utf-8") as default_file:
                 default_file.write("")
@@ -86,6 +94,6 @@ class Task:
                 if task:
                     task_info = task.split(';')
                     new_task = Task(*task_info)
-            return new_task
-
+                    tasks.append(new_task)
+            return tasks
 
