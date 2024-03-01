@@ -1,0 +1,1 @@
+#ADD in user.py the view all function
