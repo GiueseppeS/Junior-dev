@@ -2,7 +2,7 @@ import os
 
 class User:
     """Simple User class to manage users and methods"""
-    
+
     def __init__(self, _username = "", _password = "") -> None:
         self.username = _username
         self.password = _password
@@ -60,11 +60,10 @@ class User:
                     with open("user.txt", "a", encoding="utf-8") as out_file:
                         user_data = f"{self.username};{self.password}"
                         out_file.write("\n" + user_data)
-                        break
+                        return self
                 # - Otherwise you present a relevant message.
                 else:
                     print("Passwords do no match")
-
 
     def get_register_user_from_file(self) -> list:
         '''Create a list from the user.txt and return a dictionary username : password
@@ -72,7 +71,7 @@ class User:
         users = []
         if not os.path.exists("user.txt"):
             with open("user.txt", "w", encoding="utf-8") as default_file:
-                default_file.write("admin;password")
+                default_file.write("admin;password\n")
 
         with open("user.txt", 'r', encoding="utf=8") as user_file:
             user_data = user_file.read().split("\n")
@@ -81,4 +80,5 @@ class User:
                     user_info = user.split(';')
                     new_user = User(*user_info)
                     users.append(new_user)
-            return users
+
+        return users

@@ -1,14 +1,14 @@
-# Notes: 
-# 1. Use the following username and password to access the admin rights 
+# Notes:
+# 1. Use the following username and password to access the admin rights
 # username: admin
 # password: password
-# 2. Ensure you open the whole folder for this task in VS Code otherwise the 
+# 2. Ensure you open the whole folder for this task in VS Code otherwise the
 # program will look in your root directory for the text files.
 
 #=====importing libraries===========
 import os
+import sys
 import time
-from datetime import datetime, date
 from User_management.user import User
 from task import Task
 
@@ -40,9 +40,10 @@ r - Registering a user
 a - Adding a task
 va - View all tasks
 vm - View my task
+gr - generate reports
 ds - Display statistics
 e - Exit
-: ''').lower()
+: ''').lower().strip()
     return _menu
 
 
@@ -82,14 +83,24 @@ time.sleep(1)
 
 
 
+def mark_task_true(selected_task):
+    if selected_task.completed is True:
+        print("The task was already mark as completed!")
+    else:
+        selected_task.completed = True
+        print("Your task has been marked as complete!")
+
 while True:
-    # presenting the menu to the user and 
+    # presenting the menu to the user and
     # making sure that the user input is converted to lower case.
     menu = display_selection_menu()
 
     if menu == 'r':
         #new_user_instance = User()
-        User().reg_user()
+        new_user = User().reg_user()
+        if new_user:
+            USER_LIST.append(new_user)
+            print(USER_LIST)
 
     elif menu == 'a':
         new_task = Task()
@@ -99,7 +110,7 @@ while True:
             TASK_LIST.append(new_task)
 
     elif menu == 'va':
-        #Visualise all the tasks with the user assigned, the date, 
+        #Visualise all the tasks with the user assigned, the date,
         #the due date and the task description
         clear_screen()
         if len(TASK_LIST) > 0:
@@ -110,7 +121,7 @@ while True:
 
 
     elif menu == 'vm':
-    #     '''Reads the task from task.txt file and prints to the console in the 
+    #     '''Reads the task from task.txt file and prints to the console in the
     #        format of Output 2 presented in the task pdf (i.e. includes spacing
     #        and labelling)
     #     '''a
@@ -121,7 +132,7 @@ while True:
                 break
             else:
                 display_user_tasks()
-                user_selection = int(input("Select a task or -1 to exit"))
+                user_selection = int(input("Select a task or -1 to exit: "))
                 if user_selection == -1:
                     break
                 elif user_selection >= 0 and user_selection <= len(TASK_LIST) -1:
@@ -135,13 +146,28 @@ while True:
                                             "2: Edit the task\n"
                                             "3: Back to the tasks selection menu").strip())
                             if selection == 1:
-                                if selected_task.completed is True:
-                                    print("The task was already mark as completed!")
-                                else:
-                                    selected_task.completed = True
-                                    print("Your task has been marked as complete!")
+                                mark_task_true(selected_task)
                             if selection == 2:
-                                pass
+                                if selected_task.completed is True:
+                                    print("The task is already completed and can't be edited")
+                                else:
+                                    edit_selection = int(input("Do you want to: \n"
+                                            "1: Assign it to a new user\n" 
+                                            "2: Change the deadline for this task\n"
+                                            "3: Back").strip())
+                                    if edit_selection == 1:
+                                        new_user = input("User to assign it to: ")
+                                        FOUND = False
+                                        for user in USER_LIST:
+                                            if new_user == user.username:
+                                                selected_task.task_username = new_user
+                                                FOUND = True
+                                    if FOUND:
+                                        print(f"Task assigned to {new_user}")
+                                        Task().override_task_file(TASK_LIST)
+                                    else:
+                                        print("User not found")
+
                             if selection == 3:
                                 break
                     except TypeError:
@@ -149,14 +175,15 @@ while True:
                 else:
                     print("Wrong selection")
 
-                
-    
-    elif menu == 'ds' and logged_user == 'admin': 
+    elif menu == "gr" and logged_user == "admin":
+        pass
+
+    elif menu == 'ds' and logged_user == 'admin':
         display_statistics()
 
     elif menu == 'e':
         print('Goodbye!!!')
-        exit()
+        sys.exit()
 
     else:
         print("You have made a wrong choice, Please Try again")

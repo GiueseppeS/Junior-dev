@@ -48,7 +48,8 @@ class Task:
                 while True:
                     try:
                         _task_due_date = input("Due date of task (YYYY-MM-DD): ")
-                        self.task_due_date = datetime.strptime(_task_due_date, DATETIME_STRING_FORMAT)
+                        self.task_due_date = \
+                            datetime.strptime(_task_due_date, DATETIME_STRING_FORMAT)
                         break
 
                     except ValueError:
@@ -63,10 +64,8 @@ class Task:
 
 
     def _register_task(self):
-        """Write the task in the tast.txt, storing it in the memory"""
+        """Write the task in the tasks.txt, storing it in the memory"""
         curr_date = date.today()
-
-
         with open("tasks.txt", "a", encoding="utf-8") as task_file:
             str_attrs = [
                 self.task_username,
@@ -78,8 +77,9 @@ class Task:
                ]
             task_list_to_write = []
             task_list_to_write = ";".join(str_attrs)
-            task_file.write("\n" + task_list_to_write)
+            task_file.write(task_list_to_write + "\n")
             print("Task successfully added.")
+
 
 
     def get_tasks_from_file(self):
@@ -91,7 +91,7 @@ class Task:
 
         with open("tasks.txt", 'r', encoding="utf=8") as tasks_file:
             task_data = tasks_file.read().split("\n")
-            
+
         for task in task_data:
             if task:
                 task_info = task.split(';')
@@ -99,3 +99,21 @@ class Task:
                 tasks.append(new_task)
         return tasks
 
+
+    def override_task_file(self, _task_list):
+        """Override the tasks.txt file in order of update eventual modification, slower because it loops
+        through the whole tasks instead of appending at the end of the file"""
+        with open("tasks.txt", "w", encoding="utf-8") as task_file:
+            task_list_to_write = []
+            for task in _task_list:
+                print(task.task_username)
+                str_attr = [
+                    task.task_username,
+                    task.task_title,
+                    task.task_description,
+                    task.task_due_date,
+                    task.assigned_date,
+                    task.completed
+                ]
+                task_list_to_write.append(";".join(str_attr))
+            task_file.write("\n".join(task_list_to_write))
