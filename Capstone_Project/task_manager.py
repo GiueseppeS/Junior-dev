@@ -19,6 +19,19 @@ def clear_screen():
     os.system("cls")
 
 
+def display_user_tasks():
+    """Display all the tasks assigned to the logged user"""
+    for task_num, _task in enumerate(TASK_LIST):
+        if _task.task_username == logged_user:
+            disp_str =  f"\nTask number: \t {task_num}"
+            disp_str += f"\nTask: \t\t {_task.task_title}\n"
+            disp_str += f"Assigned to: \t {_task.task_username}\n"
+            disp_str += f"Date Assigned: \t {_task.assigned_date}\n"
+            disp_str += f"Due Date: \t {_task.task_due_date}\n"
+            disp_str += f"Task Description: \n {_task.task_description}\n"
+            print(disp_str)
+
+
 def display_selection_menu():
     """Display the selection menu"""
     print()
@@ -69,7 +82,6 @@ time.sleep(1)
 
 
 
-
 while True:
     # presenting the menu to the user and 
     # making sure that the user input is converted to lower case.
@@ -108,15 +120,7 @@ while True:
                 print("No task assigned yet")
                 break
             else:
-                for task_num, task in enumerate(TASK_LIST):
-                    if task.task_username == logged_user:
-                        disp_str =  f"\nTask number: \t {task_num}"
-                        disp_str += f"\nTask: \t\t {task.task_title}\n"
-                        disp_str += f"Assigned to: \t {task.task_username}\n"
-                        disp_str += f"Date Assigned: \t {task.assigned_date}\n"
-                        disp_str += f"Due Date: \t {task.task_due_date}\n"
-                        disp_str += f"Task Description: \n {task.task_description}\n"
-                        print(disp_str)
+                display_user_tasks()
                 user_selection = int(input("Select a task or -1 to exit"))
                 if user_selection == -1:
                     break
@@ -124,7 +128,24 @@ while True:
                     clear_screen()
                     selected_task = TASK_LIST[user_selection]
                     print(f"You selected the task {selected_task.task_title}")
-                    selection = input("Do you want to: \n 1: Mark the task as complete\n 2: Edit the task")
+                    try:
+                        while True:
+                            selection = int(input("Do you want to: \n"
+                                            "1: Mark the task as complete\n" 
+                                            "2: Edit the task\n"
+                                            "3: Back to the tasks selection menu").strip())
+                            if selection == 1:
+                                if selected_task.completed is True:
+                                    print("The task was already mark as completed!")
+                                else:
+                                    selected_task.completed = True
+                                    print("Your task has been marked as complete!")
+                            if selection == 2:
+                                pass
+                            if selection == 3:
+                                break
+                    except TypeError:
+                        print("wrong input, please select one of the 2 options")
                 else:
                     print("Wrong selection")
 

@@ -39,7 +39,7 @@ class Task:
         - the due date of the task.'''
 
         users_list = User().get_register_user_from_file()
-        _task_username = input("Name of person assigned to task: ")
+        _task_username = input("Name of person assigned to task: ").strip()
         for user in users_list:
             if _task_username == user.username:
                 self.task_username = _task_username

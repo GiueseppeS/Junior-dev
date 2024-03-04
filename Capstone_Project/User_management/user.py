@@ -16,8 +16,8 @@ class User:
         while not logged_in:
             users = self.get_register_user_from_file()
             print("LOGIN")
-            curr_user = input("Username: ")
-            curr_pass = input("Password: ")
+            curr_user = input("Username: ").strip()
+            curr_pass = input("Password: ").strip()
             for user in users:
                 if curr_user != user.username:
                     continue
@@ -49,9 +49,9 @@ class User:
         else:
             while True:
                 # - Request input of a new password
-                new_password = input("New Password: ")
+                new_password = input("New Password: ").strip()
                 # - Request input of password confirmation.
-                confirm_password = input("Confirm Password: ")
+                confirm_password = input("Confirm Password: ").strip()
 
 
                 if new_password == confirm_password:
