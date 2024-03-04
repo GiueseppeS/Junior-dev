@@ -1,1 +1,2 @@
-#ADD in user.py the view all function
+#ADD in user.py the view all function SOLVED
+#FIX THE USER SELECT in "VM" FUNCTION, RIGHT NOW IT COUNT ONLY INTEGER

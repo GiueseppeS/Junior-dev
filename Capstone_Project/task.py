@@ -13,7 +13,7 @@ class Task:
     """Class that allow to create/list/eliminates tasks"""
 
     def __init__(self, _username = "", _title = "", _description = "", \
-                 _due_date = "", _assigned_date = "", _completed = "") -> None:
+                 _due_date = date.today, _assigned_date = date.today, _completed = "") -> None:
         self.task_username = _username
         self.task_title = _title
         self.task_description = _description
@@ -38,27 +38,28 @@ class Task:
         - A description of the task and 
         - the due date of the task.'''
 
-        users_list = User().get_register_user()
+        users_list = User().get_register_user_from_file()
         _task_username = input("Name of person assigned to task: ")
-        if _task_username not in users_list:
-            print("User does not exist. Please enter a valid username")
-            return False
-        self.task_username = _task_username
-        self.task_title = input("Title of Task: ")
-        self.task_description = input("Description of Task: ")
-        while True:
-            try:
-                _task_due_date = input("Due date of task (YYYY-MM-DD): ")
-                self.task_due_date = datetime.strptime(_task_due_date, DATETIME_STRING_FORMAT)
-                break
+        for user in users_list:
+            if _task_username == user.username:
+                self.task_username = _task_username
+                self.task_title = input("Title of Task: ")
+                self.task_description = input("Description of Task: ")
+                while True:
+                    try:
+                        _task_due_date = input("Due date of task (YYYY-MM-DD): ")
+                        self.task_due_date = datetime.strptime(_task_due_date, DATETIME_STRING_FORMAT)
+                        break
 
-            except ValueError:
-                print("Invalid datetime format. Please use the format specified")
+                    except ValueError:
+                        print("Invalid datetime format. Please use the format specified")
          # Then get the current date.
-        self.assigned_date = date.today()
-        self.completed = False
-        self._register_task()
-        return True
+                self.assigned_date = date.today()
+                self.completed = False
+                self._register_task()
+                return True
+        print("User does not exist. Please enter a valid username")
+        return False
 
 
     def _register_task(self):
@@ -90,10 +91,11 @@ class Task:
 
         with open("tasks.txt", 'r', encoding="utf=8") as tasks_file:
             task_data = tasks_file.read().split("\n")
-            for task in task_data:
-                if task:
-                    task_info = task.split(';')
-                    new_task = Task(*task_info)
-                    tasks.append(new_task)
-            return tasks
+            
+        for task in task_data:
+            if task:
+                task_info = task.split(';')
+                new_task = Task(*task_info)
+                tasks.append(new_task)
+        return tasks
 

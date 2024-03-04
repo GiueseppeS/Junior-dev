@@ -14,15 +14,13 @@ from task import Task
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
-""""Create a list"""
-
-
-
 def clear_screen():
     """Clearing screen funtion"""
     os.system("cls")
 
+
 def display_selection_menu():
+    """Display the selection menu"""
     print()
     _menu = input('''Select one of the following Options below:
 r - Registering a user
@@ -35,38 +33,42 @@ e - Exit
     return _menu
 
 
+def display_statistics():
+    '''If the user is an admin they can display statistics about number of users
+            and tasks.'''
+    num_user = len(USER_LIST)
+    num_task = len(TASK_LIST)
+    clear_screen()
+    print("-----------------------------------")
+    print(f"Number of users: \t\t {num_user}")
+    print(f"Number of tasks: \t\t {num_task}")
+    print("-----------------------------------")
+    time.sleep(1)
 
+#Creating list of users from the user.txt file
+USER_LIST : User = User().get_register_user_from_file()
 
+#Creating a list of tasks from the task.txt
+TASK_LIST = Task().get_tasks_from_file()
 
-#USER_LIST : User = [] 
-TASK_LIST : Task = []
-
+#Keeping track of the logged user
 logged_user : str = ""
 
 
-
-
-LOGGED_IN = False
-while not LOGGED_IN:
-
-    print("LOGIN")
-    curr_user = input("Username: ")
-    curr_pass = input("Password: ")
-    logged_user_instance = User()
-    LOGGED_IN = logged_user_instance.authenticate(curr_user, curr_pass)
+user = User().authenticate()
 
 #USER_LIST.append(logged_user_instance)
-logged_user = logged_user_instance.username
+logged_user = user.username
 clear_screen()
 print("Logged in as " + logged_user)
 
-#Creating an instance of the Task class in order to retrieve the tasks from the tasks.txt file
-tasks_getter = Task()
-TASK_LIST = tasks_getter.get_tasks_from_file()
+#retrieve the tasks from the tasks.txt file
+TASK_LIST = Task().get_tasks_from_file()
 
 time.sleep(1)
 
-del tasks_getter
+
+
 
 while True:
     # presenting the menu to the user and 
@@ -74,23 +76,19 @@ while True:
     menu = display_selection_menu()
 
     if menu == 'r':
-        new_user_instance = User()
-        new_user_instance.reg_user()
+        #new_user_instance = User()
+        User().reg_user()
 
     elif menu == 'a':
-        task_instance = Task()
-        TASK_IS_CORRECT = task_instance.add_task()
+        new_task = Task()
+        TASK_IS_CORRECT = new_task.add_task()
         #Adding the new user to the users list
         if TASK_IS_CORRECT:
-            TASK_LIST.append(task_instance)
+            TASK_LIST.append(new_task)
 
     elif menu == 'va':
         #Visualise all the tasks with the user assigned, the date, 
         #the due date and the task description
-
-        task_instance = Task()
-        TASK_LIST = task_instance.get_tasks_from_file()
-
         clear_screen()
         if len(TASK_LIST) > 0:
             for task in TASK_LIST:
@@ -100,31 +98,40 @@ while True:
 
 
     elif menu == 'vm':
-        pass
     #     '''Reads the task from task.txt file and prints to the console in the 
     #        format of Output 2 presented in the task pdf (i.e. includes spacing
     #        and labelling)
     #     '''a
-    #     for t in task_list:
-    #         if t['username'] == curr_user:
-    #             disp_str = f"Task: \t\t {t['title']}\n"
-    #             disp_str += f"Assigned to: \t {t['username']}\n"
-    #             disp_str += f"Date Assigned: \t {t['assigned_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-    #             disp_str += f"Due Date: \t {t['due_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-    #             disp_str += f"Task Description: \n {t['description']}\n"
-    #             print(disp_str)
+        user_selection : int
+        while True:
+            if len(TASK_LIST) <= 0:
+                print("No task assigned yet")
+                break
+            else:
+                for task_num, task in enumerate(TASK_LIST):
+                    if task.task_username == logged_user:
+                        disp_str =  f"\nTask number: \t {task_num}"
+                        disp_str += f"\nTask: \t\t {task.task_title}\n"
+                        disp_str += f"Assigned to: \t {task.task_username}\n"
+                        disp_str += f"Date Assigned: \t {task.assigned_date}\n"
+                        disp_str += f"Due Date: \t {task.task_due_date}\n"
+                        disp_str += f"Task Description: \n {task.task_description}\n"
+                        print(disp_str)
+                user_selection = int(input("Select a task or -1 to exit"))
+                if user_selection == -1:
+                    break
+                elif user_selection >= 0 and user_selection <= len(TASK_LIST) -1:
+                    clear_screen()
+                    selected_task = TASK_LIST[user_selection]
+                    print(f"You selected the task {selected_task.task_title}")
+                    selection = input("Do you want to: \n 1: Mark the task as complete\n 2: Edit the task")
+                else:
+                    print("Wrong selection")
+
                 
     
-    # elif menu == 'ds' and curr_user == 'admin': 
-    #     '''If the user is an admin they can display statistics about number of users
-    #         and tasks.'''
-    #     num_users = len(username_password.keys())
-    #     num_tasks = len(task_list)
-
-    #     print("-----------------------------------")
-    #     print(f"Number of users: \t\t {num_users}")
-    #     print(f"Number of tasks: \t\t {num_tasks}")
-    #     print("-----------------------------------")    
+    elif menu == 'ds' and logged_user == 'admin': 
+        display_statistics()
 
     elif menu == 'e':
         print('Goodbye!!!')
