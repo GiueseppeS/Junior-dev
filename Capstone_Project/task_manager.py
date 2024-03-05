@@ -1,3 +1,12 @@
+#=====importing libraries===========
+import os
+import sys
+import time
+from datetime import date
+from User_management.user import User
+from task import Task
+from database_overview import Overview as report
+    
 # Notes:
 # 1. Use the following username and password to access the admin rights
 # username: admin
@@ -5,19 +14,33 @@
 # 2. Ensure you open the whole folder for this task in VS Code otherwise the
 # program will look in your root directory for the text files.
 
-#=====importing libraries===========
-import os
-import sys
-import time
-from User_management.user import User
-from task import Task
-from database_overview import Overview as report
-from datetime import datetime, date
-DATETIME_STRING_FORMAT = "%Y-%m-%d"
-
 def clear_screen():
     """Clearing screen funtion"""
     os.system("cls")
+
+DATETIME_STRING_FORMAT = "%Y-%m-%d"
+#Creating list of users from the user.txt file
+USER_LIST : User = User().get_register_user_from_file()
+
+#Creating a list of tasks from the task.txt
+TASK_LIST = Task().get_tasks_from_file()
+
+#Keeping track of the logged user
+logged_user : str = ""
+
+
+user = User().authenticate()
+
+#USER_LIST.append(logged_user_instance)
+logged_user = user.username
+clear_screen()
+print("Logged in as " + logged_user)
+
+#retrieve the tasks from the tasks.txt file
+TASK_LIST = Task().get_tasks_from_file()
+
+
+time.sleep(1)
 
 
 def display_user_tasks():
@@ -51,44 +74,35 @@ e - Exit
 def display_statistics():
     '''If the user is an admin they can display statistics about number of users
             and tasks.'''
+    #All my users and tasks are read from the file and stored into a class list at the beginning of
+    #the task_manager, I have complete access to that
+
     num_user = len(USER_LIST)
     num_task = len(TASK_LIST)
+    completed_tasks = report().completed_tasks(TASK_LIST)
+    uncompleted_tasks = num_task - completed_tasks
+    overdue_tasks = report().overdue_tasks(TASK_LIST)
     clear_screen()
     print("-----------------------------------")
+    print("         USER STATISTICS           ")
     print(f"Number of users: \t\t {num_user}")
+    print("         TASKS STATISTICS          ")
     print(f"Number of tasks: \t\t {num_task}")
+    print(f"Completed tasks: \t\t {completed_tasks}")
+    print(f"Uncompleted tasks: \t\t {uncompleted_tasks}")
+    print(f"Overdue tasks: \t\t {overdue_tasks}")
     print("-----------------------------------")
     time.sleep(1)
 
-#Creating list of users from the user.txt file
-USER_LIST : User = User().get_register_user_from_file()
-
-#Creating a list of tasks from the task.txt
-TASK_LIST = Task().get_tasks_from_file()
-
-#Keeping track of the logged user
-logged_user : str = ""
-
-
-user = User().authenticate()
-
-#USER_LIST.append(logged_user_instance)
-logged_user = user.username
-clear_screen()
-print("Logged in as " + logged_user)
-
-#retrieve the tasks from the tasks.txt file
-TASK_LIST = Task().get_tasks_from_file()
-
-time.sleep(1)
 
 
 
-def mark_task_true(selected_task):
-    if selected_task.completed is True:
+def mark_task_true(_selected_task):
+    """Mark tasks as completed"""
+    if _selected_task.completed is True:
         print("The task was already mark as completed!")
     else:
-        selected_task.completed = True
+        _selected_task.completed = True
         print("Your task has been marked as complete!")
 
 while True:
@@ -194,7 +208,7 @@ while True:
                     print("Wrong selection")
 
     elif menu == "gr" and logged_user == "admin":
-        pass
+        report().generate_task_report(len(TASK_LIST), TASK_LIST)
 
     elif menu == 'ds' and logged_user == 'admin':
         display_statistics()

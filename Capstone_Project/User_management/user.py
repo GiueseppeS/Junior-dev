@@ -73,7 +73,7 @@ class User:
         users = []
         if not os.path.exists("user.txt"):
             with open("user.txt", "w", encoding="utf-8") as default_file:
-                default_file.write("admin;password\n")
+                default_file.write("admin;password")
 
         with open("user.txt", 'r', encoding="utf=8") as user_file:
             user_data = user_file.read().split("\n")

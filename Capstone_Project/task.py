@@ -35,8 +35,8 @@ class Task:
             try:
                 _task_due_date = input("Due date of task (YYYY-MM-DD): ")
                 self.task_due_date = \
-                            datetime.strptime(_task_due_date, DATETIME_STRING_FORMAT)
-                return self.task_due_date.strftime(DATETIME_STRING_FORMAT)
+                            datetime.strptime(_task_due_date, DATETIME_STRING_FORMAT).date()
+                return _task_due_date
 
             except ValueError:
                 print("Invalid datetime format. Please use the format specified")
@@ -86,7 +86,7 @@ class Task:
                ]
             task_list_to_write = []
             task_list_to_write = ";".join(str_attrs)
-            task_file.write("\n" + task_list_to_write)
+            task_file.write(task_list_to_write + "\n")
             print("Task successfully added.")
 
 
@@ -105,6 +105,7 @@ class Task:
             if task:
                 task_info = task.split(';')
                 new_task = Task(*task_info)
+                new_task.task_due_date = datetime.strptime(new_task.task_due_date, DATETIME_STRING_FORMAT).date()
                 tasks.append(new_task)
         return tasks
 
@@ -123,6 +124,5 @@ class Task:
                     str(task.assigned_date),
                     "Yes" if task.completed else "No"
                 ]
-                print(str_attr)
                 task_list_to_write.append(";".join(str_attr))
             task_file.write("\n".join(task_list_to_write))
