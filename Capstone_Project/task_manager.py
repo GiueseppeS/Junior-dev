@@ -11,7 +11,8 @@ import sys
 import time
 from User_management.user import User
 from task import Task
-
+from database_overview import Overview as report
+from datetime import datetime, date
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
 def clear_screen():
@@ -141,35 +142,52 @@ while True:
                     print(f"You selected the task {selected_task.task_title}")
                     try:
                         while True:
+                            
                             selection = int(input("Do you want to: \n"
                                             "1: Mark the task as complete\n" 
                                             "2: Edit the task\n"
                                             "3: Back to the tasks selection menu").strip())
                             if selection == 1:
                                 mark_task_true(selected_task)
+
                             if selection == 2:
                                 if selected_task.completed is True:
                                     print("The task is already completed and can't be edited")
                                 else:
-                                    edit_selection = int(input("Do you want to: \n"
-                                            "1: Assign it to a new user\n" 
-                                            "2: Change the deadline for this task\n"
-                                            "3: Back").strip())
-                                    if edit_selection == 1:
-                                        new_user = input("User to assign it to: ")
-                                        FOUND = False
-                                        for user in USER_LIST:
-                                            if new_user == user.username:
-                                                selected_task.task_username = new_user
-                                                FOUND = True
-                                    if FOUND:
-                                        print(f"Task assigned to {new_user}")
-                                        Task().override_task_file(TASK_LIST)
-                                    else:
-                                        print("User not found")
-
+                                    while True:
+                                        edit_selection = int(input("Do you want to: \n"
+                                                "1: Assign it to a new user\n" 
+                                                "2: Change the deadline for this task\n"
+                                                "3: Back").strip())
+                                        if edit_selection == 1:
+                                            new_user = input("User to assign it to: ")
+                                            FOUND = False
+                                            for user in USER_LIST:
+                                                if new_user == user.username:
+                                                    selected_task.task_username = new_user
+                                                    FOUND = True
+                                            if FOUND:
+                                                print(f"Task assigned to {new_user}")
+                                                #Task().override_task_file(TASK_LIST)
+                                                break
+                                            else:
+                                                print("User not found")
+                                        if edit_selection == 2:
+                                            clear_screen()
+                                            print(f"The current deadline is {selected_task.task_due_date}")
+                                            new_deadline : date = Task().deadline()
+                                            selected_task.task_due_date = new_deadline
+                                            print(f"The new deadline is now: {new_deadline}" )
+                                            #Task().override_task_file(TASK_LIST)
+                                            break
+                                        if edit_selection == 3:
+                                            break
                             if selection == 3:
                                 break
+                            print("a")
+                            TASK_LIST[user_selection] = selected_task
+                            Task().override_task_file(TASK_LIST)
+
                     except TypeError:
                         print("wrong input, please select one of the 2 options")
                 else:

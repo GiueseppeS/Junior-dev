@@ -1,5 +1,7 @@
 import os
 
+
+
 class User:
     """Simple User class to manage users and methods"""
 

@@ -17,7 +17,7 @@ class Task:
         self.task_username = _username
         self.task_title = _title
         self.task_description = _description
-        self.task_due_date = _due_date
+        self.task_due_date : date = _due_date
         self.assigned_date = _assigned_date
         self.completed = _completed
 
@@ -28,6 +28,18 @@ class Task:
                 f"Date assigned: \t {self.assigned_date}\n" \
                 f"Due Date: \t {self.task_due_date}\n" \
                 f"Task Description: \n {self.task_description}\n"
+
+    def deadline(self):
+        """Add or swap the deadline"""
+        while True:
+            try:
+                _task_due_date = input("Due date of task (YYYY-MM-DD): ")
+                self.task_due_date = \
+                            datetime.strptime(_task_due_date, DATETIME_STRING_FORMAT)
+                return self.task_due_date.strftime(DATETIME_STRING_FORMAT)
+
+            except ValueError:
+                print("Invalid datetime format. Please use the format specified")
 
 
     def add_task(self) -> bool:
@@ -45,22 +57,19 @@ class Task:
                 self.task_username = _task_username
                 self.task_title = input("Title of Task: ")
                 self.task_description = input("Description of Task: ")
-                while True:
-                    try:
-                        _task_due_date = input("Due date of task (YYYY-MM-DD): ")
-                        self.task_due_date = \
-                            datetime.strptime(_task_due_date, DATETIME_STRING_FORMAT)
-                        break
-
-                    except ValueError:
-                        print("Invalid datetime format. Please use the format specified")
-         # Then get the current date.
+                self.deadline()
+                # Then get the current date.
                 self.assigned_date = date.today()
                 self.completed = False
                 self._register_task()
                 return True
         print("User does not exist. Please enter a valid username")
         return False
+
+
+
+
+
 
 
     def _register_task(self):
@@ -77,7 +86,7 @@ class Task:
                ]
             task_list_to_write = []
             task_list_to_write = ";".join(str_attrs)
-            task_file.write(task_list_to_write + "\n")
+            task_file.write("\n" + task_list_to_write)
             print("Task successfully added.")
 
 
@@ -100,20 +109,20 @@ class Task:
         return tasks
 
 
-    def override_task_file(self, _task_list):
+    def override_task_file(self, _task_list : list):
         """Override the tasks.txt file in order of update eventual modification, slower because it loops
         through the whole tasks instead of appending at the end of the file"""
         with open("tasks.txt", "w", encoding="utf-8") as task_file:
             task_list_to_write = []
             for task in _task_list:
-                print(task.task_username)
                 str_attr = [
                     task.task_username,
                     task.task_title,
                     task.task_description,
-                    task.task_due_date,
-                    task.assigned_date,
-                    task.completed
+                    str(task.task_due_date),
+                    str(task.assigned_date),
+                    "Yes" if task.completed else "No"
                 ]
+                print(str_attr)
                 task_list_to_write.append(";".join(str_attr))
             task_file.write("\n".join(task_list_to_write))
