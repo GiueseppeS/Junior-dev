@@ -7,7 +7,9 @@ from User_management.user import User
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
-
+if not os.path.exists("tasks.txt"):
+    with open("tasks.txt", "w", encoding="utf-8") as default_file:
+        default_file.write("")
 
 class Task:
     """Class that allow to create/list/eliminates tasks"""
@@ -20,7 +22,7 @@ class Task:
         self.task_due_date : date = _due_date
         self.assigned_date = _assigned_date
         self.completed = _completed
-
+        self.task = []
 
     def __str__(self) -> str:
         return f"Task: \t\t {self.task_title}\n" \
@@ -28,6 +30,12 @@ class Task:
                 f"Date assigned: \t {self.assigned_date}\n" \
                 f"Due Date: \t {self.task_due_date}\n" \
                 f"Task Description: \n {self.task_description}\n"
+
+    def get_tasks(self):
+        """Return a list of tasks"""
+        self.task = self.get_tasks_from_file()
+        return self.task
+
 
     def deadline(self):
         """Add or swap the deadline"""
@@ -94,9 +102,7 @@ class Task:
     def get_tasks_from_file(self):
         """Retrieving the tasks from the tasks.txt file, if missing it will be created"""
         tasks = []
-        if not os.path.exists("tasks.txt"):
-            with open("tasks.txt", "w", encoding="utf-8") as default_file:
-                default_file.write("")
+
 
         with open("tasks.txt", 'r', encoding="utf=8") as tasks_file:
             task_data = tasks_file.read().split("\n")
@@ -113,8 +119,8 @@ class Task:
     def override_task_file(self, _task_list : list):
         """Override the tasks.txt file in order of update eventual modification, slower because it loops
         through the whole tasks instead of appending at the end of the file"""
+        task_list_to_write = []
         with open("tasks.txt", "w", encoding="utf-8") as task_file:
-            task_list_to_write = []
             for task in _task_list:
                 str_attr = [
                     task.task_username,
@@ -124,5 +130,7 @@ class Task:
                     str(task.assigned_date),
                     "Yes" if task.completed else "No"
                 ]
-                task_list_to_write.append(";".join(str_attr))
-            task_file.write("\n".join(task_list_to_write))
+                task_list_to_write = ";".join(str_attr)
+                task_file.write(task_list_to_write + "\n")
+
+

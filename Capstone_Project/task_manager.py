@@ -23,7 +23,7 @@ DATETIME_STRING_FORMAT = "%Y-%m-%d"
 USER_LIST : User = User().get_register_user_from_file()
 
 #Creating a list of tasks from the task.txt
-TASK_LIST = Task().get_tasks_from_file()
+TASK_LIST = Task().get_tasks()
 
 #Keeping track of the logged user
 logged_user : str = ""
@@ -35,9 +35,6 @@ user = User().authenticate()
 logged_user = user.username
 clear_screen()
 print("Logged in as " + logged_user)
-
-#retrieve the tasks from the tasks.txt file
-TASK_LIST = Task().get_tasks_from_file()
 
 
 time.sleep(1)
@@ -77,11 +74,17 @@ def display_statistics():
     #All my users and tasks are read from the file and stored into a class list at the beginning of
     #the task_manager, I have complete access to that
 
+    #Gathering information for the tasks statistics
     num_user = len(USER_LIST)
     num_task = len(TASK_LIST)
-    completed_tasks = report().completed_tasks(TASK_LIST)
+    completed_tasks = report().completed_tasks_calculator(TASK_LIST)
     uncompleted_tasks = num_task - completed_tasks
     overdue_tasks = report().overdue_tasks(TASK_LIST)
+    incomplete_percentage = "0%"
+    overdue_percentage = "0%"
+    if num_task > 0:
+        incomplete_percentage, overdue_percentage = report().calculate_percentage(num_task, uncompleted_tasks, overdue_tasks)
+
     clear_screen()
     print("-----------------------------------")
     print("         USER STATISTICS           ")
@@ -90,7 +93,9 @@ def display_statistics():
     print(f"Number of tasks: \t\t {num_task}")
     print(f"Completed tasks: \t\t {completed_tasks}")
     print(f"Uncompleted tasks: \t\t {uncompleted_tasks}")
-    print(f"Overdue tasks: \t\t {overdue_tasks}")
+    print(f"Overdue tasks: \t\t\t {overdue_tasks}")
+    print(f"Percentage of incomplete: \t {incomplete_percentage:0.2f}")
+    print(f"Percentage in overdue: \t\t {overdue_percentage:0.2f}")
     print("-----------------------------------")
     time.sleep(1)
 

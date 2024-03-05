@@ -1,1 +1,7 @@
-1;1;0;0;0.00%;0.00%
+TASKS REPORT - 2024-03-05
+Number of tasks: 		2
+Completed tasks: 		0
+Uncompleted tasks: 		2
+1
+100.00%
+50.00%
