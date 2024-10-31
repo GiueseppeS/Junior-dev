@@ -1,0 +1,42 @@
+TASKS REPORT - 2024-03-06
+
+
+*****************************************************************
+User admin has:
+5 assigned
+5 completed
+0 not completed
+0 not completed and in overdue
+Percentage tasks assigned: 71.43%
+Percentage tasks completed: 71.43%
+Percentage tasks not completed: 0.00%
+Percentage task in overdue: 0.00%
+*****************************************************************
+
+
+*****************************************************************
+User sa has:
+2 assigned
+0 completed
+2 not completed
+0 not completed and in overdue
+Percentage tasks assigned: 28.57%
+Percentage tasks completed: 0.00%
+Percentage tasks not completed: 28.57%
+Percentage task in overdue: 0.00%
+*****************************************************************
+
+
+*****************************************************************
+User ko has:
+0 assigned
+0 completed
+0 not completed
+0 not completed and in overdue
+Percentage tasks assigned: 0.00%
+Percentage tasks completed: 0.00%
+Percentage tasks not completed: 0.00%
+Percentage task in overdue: 0.00%
+*****************************************************************
+
+

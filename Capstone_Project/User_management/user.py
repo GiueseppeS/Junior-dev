@@ -1,5 +1,5 @@
+"""Module used to manage Users, allows to add, remove, authenticate users"""
 import os
-
 
 
 class User:
@@ -8,8 +8,10 @@ class User:
     def __init__(self, _username = "", _password = "") -> None:
         self.username = _username
         self.password = _password
-
-
+        self.completed_tasks = 0
+        self.task_not_completed = 0
+        self.task_not_completed_overdue = 0
+        self.number_of_task = 0
 
     def authenticate(self):
         """Method that authenticate the user at the beginning of the software"""

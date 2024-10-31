@@ -1,7 +1,7 @@
-TASKS REPORT - 2024-03-05
-Number of tasks: 		2
-Completed tasks: 		0
+TASKS REPORT - 2024-03-06
+Number of tasks: 		7
+Completed tasks: 		5
 Uncompleted tasks: 		2
-1
-100.00%
-50.00%
+Overdue tasks: 			0
+Incomplete percentage: 	28.57%
+Overdue percentage: 	0.00%

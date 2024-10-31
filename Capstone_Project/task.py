@@ -15,7 +15,7 @@ class Task:
     """Class that allow to create/list/eliminates tasks"""
 
     def __init__(self, _username = "", _title = "", _description = "", \
-                 _due_date = date.today, _assigned_date = date.today, _completed = "") -> None:
+                 _due_date = date.today, _assigned_date = date.today, _completed = False) -> None:
         self.task_username = _username
         self.task_title = _title
         self.task_description = _description
@@ -111,14 +111,17 @@ class Task:
             if task:
                 task_info = task.split(';')
                 new_task = Task(*task_info)
-                new_task.task_due_date = datetime.strptime(new_task.task_due_date, DATETIME_STRING_FORMAT).date()
+                new_task.completed = True if new_task.completed == "Yes" else False
+                new_task.task_due_date = \
+                    datetime.strptime(new_task.task_due_date, DATETIME_STRING_FORMAT).date()
                 tasks.append(new_task)
         return tasks
 
 
     def override_task_file(self, _task_list : list):
-        """Override the tasks.txt file in order of update eventual modification, slower because it loops
-        through the whole tasks instead of appending at the end of the file"""
+        """Override the tasks.txt file in order of update eventual modification,
+        slower in case of new users because it loops through the whole tasks 
+        instead of appending at the end of the file"""
         task_list_to_write = []
         with open("tasks.txt", "w", encoding="utf-8") as task_file:
             for task in _task_list:
@@ -132,5 +135,3 @@ class Task:
                 ]
                 task_list_to_write = ";".join(str_attr)
                 task_file.write(task_list_to_write + "\n")
-
-

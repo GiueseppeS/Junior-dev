@@ -1,3 +1,4 @@
+"""Main module to manage tasks and users with a txt database"""
 #=====importing libraries===========
 import os
 import sys
@@ -6,7 +7,7 @@ from datetime import date
 from User_management.user import User
 from task import Task
 from database_overview import Overview as report
-    
+
 # Notes:
 # 1. Use the following username and password to access the admin rights
 # username: admin
@@ -25,7 +26,7 @@ USER_LIST : User = User().get_register_user_from_file()
 #Creating a list of tasks from the task.txt
 TASK_LIST = Task().get_tasks()
 
-#Keeping track of the logged user
+#Keeping track of the logged usera
 logged_user : str = ""
 
 
@@ -42,16 +43,22 @@ time.sleep(1)
 
 def display_user_tasks():
     """Display all the tasks assigned to the logged user"""
-    for task_num, _task in enumerate(TASK_LIST):
+    _user_tasks = []
+    for _task in TASK_LIST:
         if _task.task_username == logged_user:
+            _user_tasks.append(_task)
+    if len(_user_tasks) > 0:
+        for task_num, _user_task in enumerate(_user_tasks):
             disp_str =  f"\nTask number: \t {task_num}"
-            disp_str += f"\nTask: \t\t {_task.task_title}\n"
-            disp_str += f"Assigned to: \t {_task.task_username}\n"
-            disp_str += f"Date Assigned: \t {_task.assigned_date}\n"
-            disp_str += f"Due Date: \t {_task.task_due_date}\n"
-            disp_str += f"Task Description: \n {_task.task_description}\n"
+            disp_str += f"\nTask: \t\t {_user_task.task_title}\n"
+            disp_str += f"Assigned to: \t {_user_task.task_username}\n"
+            disp_str += f"Date Assigned: \t {_user_task.assigned_date}\n"
+            disp_str += f"Due Date: \t {_user_task.task_due_date}\n"
+            disp_str += f"Task Description: \n {_user_task.task_description}\n"
             print(disp_str)
-
+    return _user_tasks
+    # else:
+    #     print("No task assigned to you")
 
 def display_selection_menu():
     """Display the selection menu"""
@@ -80,10 +87,11 @@ def display_statistics():
     completed_tasks = report().completed_tasks_calculator(TASK_LIST)
     uncompleted_tasks = num_task - completed_tasks
     overdue_tasks = report().overdue_tasks(TASK_LIST)
-    incomplete_percentage = "0%"
-    overdue_percentage = "0%"
+    incomplete_percentage = 0
+    overdue_percentage = 0
     if num_task > 0:
-        incomplete_percentage, overdue_percentage = report().calculate_percentage(num_task, uncompleted_tasks, overdue_tasks)
+        incomplete_percentage, overdue_percentage = \
+            report().calculate_percentage(num_task, uncompleted_tasks, overdue_tasks)
 
     clear_screen()
     print("-----------------------------------")
@@ -151,21 +159,21 @@ while True:
                 print("No task assigned yet")
                 break
             else:
-                display_user_tasks()
+                user_tasks = display_user_tasks()
                 user_selection = int(input("Select a task or -1 to exit: "))
                 if user_selection == -1:
                     break
-                elif user_selection >= 0 and user_selection <= len(TASK_LIST) -1:
+                elif user_selection >= 0 and user_selection <= len(user_tasks) -1:
                     clear_screen()
-                    selected_task = TASK_LIST[user_selection]
+                    selected_task = user_tasks[user_selection]
+                    TASK_LIST.remove(selected_task)
                     print(f"You selected the task {selected_task.task_title}")
                     try:
                         while True:
-                            
                             selection = int(input("Do you want to: \n"
                                             "1: Mark the task as complete\n" 
                                             "2: Edit the task\n"
-                                            "3: Back to the tasks selection menu").strip())
+                                            "3: Back to the tasks selection menu: ").strip())
                             if selection == 1:
                                 mark_task_true(selected_task)
 
@@ -177,7 +185,7 @@ while True:
                                         edit_selection = int(input("Do you want to: \n"
                                                 "1: Assign it to a new user\n" 
                                                 "2: Change the deadline for this task\n"
-                                                "3: Back").strip())
+                                                "3: Back: ").strip())
                                         if edit_selection == 1:
                                             new_user = input("User to assign it to: ")
                                             FOUND = False
@@ -193,18 +201,17 @@ while True:
                                                 print("User not found")
                                         if edit_selection == 2:
                                             clear_screen()
-                                            print(f"The current deadline is {selected_task.task_due_date}")
+                                            print(f"The current deadline is \
+                                                  {selected_task.task_due_date}")
                                             new_deadline : date = Task().deadline()
                                             selected_task.task_due_date = new_deadline
                                             print(f"The new deadline is now: {new_deadline}" )
-                                            #Task().override_task_file(TASK_LIST)
                                             break
                                         if edit_selection == 3:
                                             break
                             if selection == 3:
                                 break
-                            print("a")
-                            TASK_LIST[user_selection] = selected_task
+                            TASK_LIST.append(selected_task)
                             Task().override_task_file(TASK_LIST)
 
                     except TypeError:
@@ -214,6 +221,7 @@ while True:
 
     elif menu == "gr" and logged_user == "admin":
         report().generate_task_report(len(TASK_LIST), TASK_LIST)
+        report().generate_user_task_report(TASK_LIST, USER_LIST)
 
     elif menu == 'ds' and logged_user == 'admin':
         display_statistics()
